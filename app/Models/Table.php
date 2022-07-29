@@ -9,10 +9,10 @@ class Table extends Model
 {
     use HasFactory;
     public $timestamps = false;
-    protected $fillable = ['name','meal_type','number_of_seats', 'created_at'];
+    protected $fillable = ['name','type','number_of_seats', 'status','created_at'];
 
     public function bookings()
     {
-        return $this->belongsToMany(Booking::class, 'booking_tables');
+        return $this->belongsToMany(Booking::class, 'booking_table');
     }
 }

@@ -9,7 +9,7 @@ class Meal extends Model
 {
     use HasFactory;
     public $timestamps = false;
-    protected $fillable = ['name', 'created_at', 'image_id'];
+    protected $fillable = ['name', 'created_at'];
     public function products()
     {
         return $this->belongsToMany(Product::class, 'meal_product');

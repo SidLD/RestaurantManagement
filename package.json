@@ -31,6 +31,7 @@
         "autoprefixer": "10.4.5",
         "laravel-mix": "^6.0.49",
         "vue-router": "^3.5.4",
-        "vuetify": "^2.6.7"
+        "vuetify": "^2.6.7",
+        "vuetify-datetime-picker": "^2.1.1"
     }
 }

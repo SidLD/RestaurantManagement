@@ -4,55 +4,68 @@ Vue.use(Router);
 
 import UserTable from './components/User/UserTable.vue'
 import AdminTable from './components/Admin/AdminTable.vue'
+import TableSetupTable from './components/Table/TableSetup.vue'
 import EmployeeTable from './components/Employee/EmployeeTable.vue'
 import CategoryTable from './components/Category/CategoryTable.vue'
 import MealTable from './components/Meal/MealTable.vue'
 import BookingTable from './components/Booking/BookingTable.vue'
 import ProductTable from './components/Product/ProductTable.vue'
-import Login from './components/pages/Login';
-import Dashboard from './components/pages/Dashboard';
-
+// import Main from './Main.vue'
 const routes = [
         {
-            path: '/dashboard',
-            component: Dashboard
+            path: '/user',
+            component: UserTable,
         },
         {
-            path: '/login',
-            component: Login
-        },
-        {
-            path: '/users',
-            component: UserTable
-        },
-        {
-            path: '/employees',
+            path: '/employee',
             component: EmployeeTable
         },
         {
-            path: '/admins',
+            path: '/admin',
             component: AdminTable
         },
         {
-            path: '/products',
+            path: '/product',
             component: ProductTable
         },
         {
-            path: '/meals',
+            path: '/meal',
             component: MealTable
         },
         {
-            path: '/categories',
+            path: '/category',
             component: CategoryTable
         },
         {
-            path: '/bookings',
+            path: '/table',
+            component: TableSetupTable
+        },
+        {
+            path: '/booking',
             component: BookingTable
         },
+        {
+            path: '/:random',
+            redirect: {
+                path: '/booking'
+            }
+        }
 ]
 
-export default new Router({
+let router = new Router({
     mode: 'history',
     routes,
     // linkActiveClass : 'active_link'
 })
+
+
+// router.beforeEach((to, from, next)=>{
+//     if(to.path === '/login'){
+//         if(window.localStorage.getItem('isLogin') !== true){
+//             window.location.href = "dashboard";
+//         }
+//     }else{
+//         next();
+//     }
+// })
+export default router;

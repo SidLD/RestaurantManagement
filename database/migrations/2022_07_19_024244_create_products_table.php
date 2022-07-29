@@ -19,6 +19,7 @@ return new class extends Migration
             $table->double('price')->nullable();
             $table->unsignedBigInteger('image_id');
             $table->string('created_at')->nullable();
+            $table->boolean('display');
         });
     }
 

@@ -3,10 +3,12 @@
 namespace App\Http\Controllers;
 
 use App\Models\Booking;
+use App\Models\Category;
 use App\Models\Image;
 use App\Models\Meal;
 use App\Models\Product;
 use Carbon\Carbon;
+use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Storage;
 
@@ -26,7 +28,31 @@ class ProductController extends Controller
         }
         return $products;
     }
-
+    public function getMealSelectableProduct($id){
+        //Get ID products of the current Category,
+        //Query except using those Ids
+        $meal = Meal::find($id);
+        $meal_products = $meal->products;
+        $meal_product_ids = [];
+        foreach($meal_products as $meal_product){
+            array_push($meal_product_ids, $meal_product->id);
+        }
+        $products = Product::all()->except($meal_product_ids);
+        return $products;
+    }
+    public function getCategorySelectableProduct($id){
+        //Get ID products of the current Category,
+        //Query except using those Ids
+        $category = Category::find($id);
+        $category_products = $category->products;
+        $category_product_ids = [];
+        foreach($category_products as $category_product){
+            array_push($category_product_ids, $category_product->id);
+        }
+        $products = Product::all()->except($category_product_ids);
+        return $products;
+    }
+    
     /**
      * Show the form for creating a new resource.
      *
@@ -106,6 +132,17 @@ class ProductController extends Controller
     public function edit($id)
     {
         //
+    }
+
+    public function productDisplay($id){
+        //IMPORTANT NOTE, THIS SHOULD not be deleted in the table and its relation
+        //So you should edit in the front end if not it is available or not
+        $product = Product::find($id);
+        $display = $product->display === 1 ? 0 : 1;
+        $product->update([
+            'display' => $display,
+        ]);
+        return response()->json(['res' => 'ok', 'msg' => "Success"]);
     }
 
     /**

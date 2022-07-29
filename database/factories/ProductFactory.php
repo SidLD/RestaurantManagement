@@ -39,7 +39,8 @@ class ProductFactory extends Factory
             'name' => $this->faker->randomElement($food_list),
             'price' => $this->faker->numerify('##.##'),
             'image_id' => 0, //Will get modified in Seeder
-            'created_at' => Carbon::now()->format('Y-m-d')
+            'created_at' => Carbon::now()->format('Y-m-d'),
+            'display' => true
         ];
     }
 }

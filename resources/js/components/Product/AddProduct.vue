@@ -6,8 +6,8 @@
           >
             <template v-slot:activator="{ on, attrs }">
               <v-btn
-                color="orange"
-                text
+                color="primary"
+                rounded
                 @click="dialog = true"
                 v-bind="attrs"
                 v-on="on"
@@ -134,9 +134,12 @@ export default {
             newProduct.append('name', this.product.name)
             newProduct.append('price', this.product.price) 
             newProduct.append('file', this.product.file)
+
+            const token = window.localStorage.getItem('token');
             const config = {
               headers:{
-                'content-type' : 'multipart/form-data'
+                'content-type' : 'multipart/form-data',
+                'Authorization' : 'Bearer ' + token
               }
             }
             axios.post('api/product/', newProduct, config)

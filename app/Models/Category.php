@@ -11,6 +11,6 @@ class Category extends Model
     public $timestamps = false;
     protected $fillable = ['name', 'created_at'];
     public function products(){
-        return $this->belongsToMany(Product::class, 'category_products');
+        return $this->belongsToMany(Product::class, 'category_product');
     }
 }

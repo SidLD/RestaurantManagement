@@ -4,117 +4,52 @@
         class="drawer"    
         color="blue"
         dense
-        elevation="4"
         rounded
         v-model="drawer"
-        width="100"
+        width="200"
         app
     >
-    <img
-      class="img"
-      height="70"
-      width="70"
-      v-bind:src="getImage('restaurant-logo.png')"
-    />
+    <v-list flat>
+      <v-subheader>
+        <img
+          class="img"
+          height="50"
+          width="50"
+          v-bind:src="getImage('restaurant-logo.png')"
+        />
+      </v-subheader>
+      <v-list-item-group
+        v-model="selectedItem"
+        color="green"
+      >
+        <v-list-item
+          v-for="(link, i) in links"
+          :key="i"
+        >
+        <v-btn color="white" text @click="shareData(link.text)" >
+              <v-list-item-icon>
+            <v-icon v-text="link.icon"></v-icon>
+          </v-list-item-icon>
+            <v-list-item-content>
+                <v-list-item-title class="link-text" v-text="link.text"></v-list-item-title>
+        </v-list-item-content>
+        </v-btn>
+        </v-list-item>
+      </v-list-item-group>
+    </v-list>
 
-    <router-link to="/bookings">
-      <div class="text-center mt-5">
-        <v-btn fab color="white" large>
-          <div class="sidebar-btn-wrapper">
-              <v-icon aria-hidden="false" medium>
-                {{icons.mdiReceiptTextCheck}}
-              </v-icon>
-              <span class="sidebar-text">Bookings</span>  
-          </div>
-        </v-btn>
-      </div>
-    </router-link>
-    <router-link to="/users">
-      <div class="text-center mt-5">
-        <v-btn fab color="white" large>
-          <div class="sidebar-btn-wrapper">
-              <v-icon aria-hidden="false" medium>
-                {{icons.mdiAccountGroup}}
-              </v-icon>
-              <span class="sidebar-text">Users</span>  
-          </div>
-        </v-btn>
-      </div>
-    </router-link>
-    <router-link to="/employees">
-      <div class="text-center mt-5">
-        <v-btn fab color="white" large>
-          <div class="sidebar-btn-wrapper">
-              <v-icon aria-hidden="false" medium>
-                {{icons.mdiAccountGroupOutline}}
-              </v-icon>
-              <span class="sidebar-text">Employees</span>  
-          </div>
-        </v-btn>
-      </div>
-    </router-link>
-    <router-link to="/products">
-      <div class="text-center mt-5">
-        <v-btn fab color="white" large>
-          <div class="sidebar-btn-wrapper">
-              <v-icon aria-hidden="false" medium>
-                {{icons.mdiFoodTurkey}}
-              </v-icon>
-              <span class="sidebar-text">Products</span>  
-          </div>
-        </v-btn>
-      </div>
-    </router-link>
-    <router-link to="/meals">
-      <div class="text-center mt-5">
-        <v-btn fab color="white" large>
-          <div class="sidebar-btn-wrapper">
-              <v-icon aria-hidden="false" medium>
-                {{icons.mdiFoodForkDrink}}
-              </v-icon>
-              <span class="sidebar-text">Meals</span>  
-          </div>
-        </v-btn>
-      </div>
-    </router-link>
-    <router-link to="/categories">
-      <div class="text-center mt-5">
-        <v-btn fab color="white" large>
-          <div class="sidebar-btn-wrapper">
-              <v-icon aria-hidden="false" medium>
-               {{icons.mdiFood}}
-              </v-icon>
-              <span class="sidebar-text">Categories</span>  
-          </div>
-        </v-btn>
-      </div>
-    </router-link>
-    <router-link to="/admins">
-      <div class="text-center mt-5">
-        <v-btn fab color="white" large>
-          <div class="sidebar-btn-wrapper">
-              <v-icon aria-hidden="false" medium>
-                {{icons.mdiAccountSupervisorCircle}}
-              </v-icon>
-              <span class="sidebar-text">Admins</span>  
-          </div>
-        </v-btn>
-      </div>
-    </router-link>
-  
     </v-navigation-drawer>
 
     <v-app-bar app
         color="blue"
         dense
-        elevation="4"
+        elevation="0"
         outlined
-        rounded
     >
       <v-app-bar-nav-icon @click="drawer = !drawer"></v-app-bar-nav-icon>
         <v-toolbar-title>Reservation Restaurant</v-toolbar-title>
         <v-spacer></v-spacer>
-        <v-btn icon >
+        <v-btn icon @click="logout">
             <v-icon size="30">mdi-logout</v-icon>
         </v-btn>
     </v-app-bar>
@@ -139,21 +74,62 @@ import { mdiAccountGroup,
       return {
           drawer : null,
           logo : "restaurant-logo.png",
-          icons: {
-            mdiAccountGroup,
-            mdiAccountGroupOutline,
-            mdiAccountSupervisorCircle,
-            mdiFood,
-            mdiFoodTurkey,
-            mdiFoodForkDrink,
-            mdiFoodVariant,
-            mdiReceiptTextCheck
-          }
+          selectedItem: 1,
+          links : [
+            {
+              link : "bookings",
+              icon : mdiReceiptTextCheck,
+              text : "Booking"
+            },
+            {
+              link : "products",
+              icon : mdiFood,
+              text : "Product"
+            },
+            {
+              link : "users",
+              icon : mdiAccountGroup,
+              text : "User"
+            },
+            {
+              link : "employees",
+              icon : mdiAccountGroupOutline,
+              text : "Employee"
+            },
+            {
+              link : "meals",
+              icon : mdiFoodTurkey,
+              text : "Meal"
+            },
+            {
+              link : "categories",
+              icon : mdiFoodVariant,
+              text : "Category"
+            },
+            {
+              link : "tables",
+              icon : mdiFoodForkDrink,
+              text : "Table"
+            },
+            {
+              link : "admins",
+              icon : mdiAccountSupervisorCircle,
+              text : "Admin"
+            },
+          ],
       }
     },
     methods:{
       getImage(filename){
             return "./storage/images/" + filename;
+      },
+      logout(){
+         window.localStorage.setItem('token', null);
+         window.localStorage.setItem('isLogin', false);
+         window.location.href = "/login";
+      },
+      shareData(route){
+        this.$router.push("/"+route.toLowerCase()).catch(()=>{});
       }
     }
   }
@@ -165,9 +141,6 @@ import { mdiAccountGroup,
     flex-direction: column;
     justify-content: center;
     align-items: center;
-  }
-  .sidebar-text{
-    font-size: 0.5rem;
   }
   .img{
     display: flex;

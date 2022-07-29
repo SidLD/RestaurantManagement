@@ -43,9 +43,16 @@ export default {
     },
     methods: {
         initialize(){
-            axios.get('api/product')
+            const token = window.localStorage.getItem('token');
+            axios.get('api/product', {headers: {"Authorization" : "Bearer " + token}})
             .then(res => {
                 this.products = res.data;
+            })
+            .catch(error => {
+                if(error.response.status === 401){
+                  alert("Unauthorized")
+                   window.location.href = '/login';
+                }
             })
         },
         render(){

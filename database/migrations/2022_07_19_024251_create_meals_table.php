@@ -16,7 +16,6 @@ return new class extends Migration
         Schema::create('meals', function (Blueprint $table) {
             $table->id();
             $table->string('name');
-            $table->unsignedBigInteger('image_id');
             $table->string('created_at')->nullable();
         });
     }

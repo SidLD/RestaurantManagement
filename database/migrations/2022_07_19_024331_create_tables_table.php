@@ -16,7 +16,8 @@ return new class extends Migration
         Schema::create('tables', function (Blueprint $table) {
             $table->id();
             $table->string('name');
-            $table->string('meal_type');
+            $table->string('type');
+            $table->boolean('status');
             $table->integer('number_of_seats');
             $table->string('created_at');
         });

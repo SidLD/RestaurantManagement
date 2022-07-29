@@ -1,10 +1,10 @@
 <template>  
     <div>
-        <div v-if="isLogin">  
+        <div v-if="isLogin">
             <Dashboard />
         </div>
-        <div v-if="isLogin == false">
-            <Login />
+        <div v-if="!isLogin">
+            <Login/>
         </div>
     </div>
 </template>
@@ -20,8 +20,18 @@
         data: function() {
             return {
                 drawer : null,
-                isLogin : true
+                token: localStorage.getItem('token'),
+                isLogin: localStorage.getItem('isLogin')
             }
+        },
+        methods:{
+            loggedIn(){
+                axios.post
+            }
+        },
+        created(){
+            axios.defaults.headers.common['Authorization'] = "Bearer "+this.token; 
+            console.log(this.isLogin);
         }
     }
 </script>

@@ -16,8 +16,9 @@
     </v-card-title>
 
     <v-card-text class="text--primary">
-        5 star
-      <div> ₱ {{product.price}}</div>
+      <p> ₱ {{product.price}}</p>
+      <p v-if="product.display">Displayed</p>
+      <p v-if="!product.display">Not Displayed</p>
     </v-card-text>
 
     <v-card-actions>
@@ -30,7 +31,7 @@
           >
             <template v-slot:activator="{ onEdit, attrsEdit }">
               <v-btn
-                color="orange"
+                color="yellow"
                 text
                 @click="editDialog = true"
                 v-bind="attrsEdit"
@@ -98,6 +99,54 @@
           </v-dialog>
         </div>
       </template>
+      <!-- Display -->
+      <template>
+        <div class="text-center">
+          <v-dialog
+            v-model="displayDialog"
+            width="400"
+          >
+            <template v-slot:activator="{ onDisplay, attrsDisplay}">
+              <v-btn
+                color="orange"
+                text
+                @click="displayDialog = true"
+                v-bind="onDisplay"
+                v-on="attrsDisplay"
+              >
+                Display
+              </v-btn>
+            </template>
+      
+            <v-card>
+              <v-card-title class="text-h5 grey lighten-2">
+                The product <br /> {{product.name}} will be removed from 
+                Meal and Product but will not get deleted.
+              </v-card-title>
+      
+              <v-divider></v-divider>
+      
+              <v-card-actions>
+                <v-spacer></v-spacer>
+                <v-btn
+                  color="blue"
+                  text
+                  @click="displayDialog = false"
+                >
+                  Cancel
+                </v-btn>
+                <v-btn
+                  color="red"
+                  text
+                  @click="displayProduct"
+                >
+                  Confirm
+                </v-btn>
+              </v-card-actions>
+            </v-card>
+          </v-dialog>
+        </div>
+      </template>
       <!-- Delete -->
       <template>
         <div class="text-center">
@@ -155,6 +204,7 @@
             return {
               editDialog:false,
               deleteDialog:false,
+              displayDialog: false,
               file: null,
               errorName : null,
               errorPrice : null,
@@ -182,8 +232,9 @@
               this.file = e.target.files[0];
           },
           deleteProduct(){
+            const token = window.localStorage.getItem('token');
             this.deleteDialog = false;
-            axios.delete('api/product/' + this.product.id)
+            axios.delete('api/product/' + this.product.id, {headers: {"Authorization" : "Bearer " + token}})
             .then(res => {
               if(res.data.res === 'ok'){
                 alert(res.data.msg);
@@ -192,27 +243,53 @@
                 alert(res.data.msg);
               }
             })
+            .catch(error => {
+              if(error.response.status === 401){
+                alert("Unauthorized")
+                 window.location.href = '/login';
+              }
+            })
+          },
+          displayProduct(){
+            const token = window.localStorage.getItem('token');
+            axios.post('api/product/display/' + this.product.id, {headers: {"Authorization" : "Bearer " + token}})
+            .then(res => {
+              console.log(res);
+              alert(res.data.msg)
+              this.displayDialog = false;
+              this.$emit('update', this.product);
+            })
+            .catch(error => {
+              if(error.response.status === 401){
+                alert("Unauthorized")
+                window.location.href = '/login';
+              }
+              console.log(error)
+            })
           },
           editProduct(){
             let editedProduct = new FormData()
             editedProduct.append('name', this.newProduct.name)
             editedProduct.append('price', this.newProduct.price) 
             this.file !== null ? editedProduct.append('file', this.file) : null
+            const token = window.localStorage.getItem('token');
             const config = {
               headers:{
-                'content-type' : 'multipart/form-data'
+                'content-type' : 'multipart/form-data',
+                'Authorization' : 'Bearer ' + token
               }
             }
             axios.post('api/product/update/' + this.product.id, editedProduct, config)
             .then(res => {
-              console.log(res);
+              // console.log(res);
               alert(res.data.msg)
               this.editDialog = false;
+              this.$emit('update', this.product);
             })
             .catch(error => {
               this.displayError(error)
             })
-            this.$emit('update', this.product);
+            
           },
           getImage(filename){
             return "./storage/images/" + filename;

@@ -261,9 +261,15 @@
 
     methods: {
       initialize () {
-        axios.get('api/admin')
+        const token = window.localStorage.getItem('token');
+        axios.get('api/user/admin', {headers: {"Authorization" : "Bearer " + token}})
         .then(reponse => {
           this.users = reponse.data;
+        }).catch(error => {
+          if(error.response.status === 401){
+                alert("Unauthorized")
+                window.location.href = '/login';
+          }
         })
       },
 
@@ -280,14 +286,20 @@
       },
 
       deleteItemConfirm () {
-        axios.delete('api/admin/' + this.editedItem.id)
+        const token = window.localStorage.getItem('token');
+        axios.delete('api/user/admin/' + this.editedItem.id, {headers: {"Authorization" : "Bearer " + token}})
           .then(res  => {
              if(res.data.res === "ok"){
                alert("Success")
              }else {
                alert(res.data.msg);
              }
-          })
+          }).catch(error => {
+          if(error.response.status === 401){
+              alert("Unauthorized")
+            window.location.href = '/login';
+          }
+        })
         this.initialize();
         this.closeDelete();
       },
@@ -346,9 +358,10 @@
               lastName : this.editedItem.last_name,
               contact : this.editedItem.contact,
               email : this.editedItem.email,
+              }
             }
-          }
-            axios.put('api/admin/' + this.editedItem.id, editedUser)
+            const token = window.localStorage.getItem('token');
+            axios.put('api/user/admin/' + this.editedItem.id, editedUser, {headers: {"Authorization" : "Bearer " + token}})
             .then(res  => {
               if(res.data.res === "ok"){
                 alert("Success")
@@ -361,6 +374,10 @@
               }
             })
             .catch(error => {
+              if(error.response.status === 401){
+                alert("Unauthorized")
+                window.location.href = '/login';
+              }
               this.displayError(error)
             })
         } else {
@@ -374,7 +391,8 @@
                 password : this.editedItem.password,
                 confirmPassword : this.editedItem.confirmPassword
             }
-             axios.post('api/admin', editedUser)
+            const token = window.localStorage.getItem('token');
+             axios.post('api/user/admin', editedUser,  {headers: {"Authorization" : "Bearer " + token}})
              .then(res  => {
                 if(res.data.res === "ok"){
                   alert("Success");
@@ -387,6 +405,10 @@
                 }
              })
              .catch(error => {
+                if(error.response.status === 401){
+                  alert("Unauthorized")
+                  window.location.href = '/login';
+                }
                 this.displayError(error)
              })
         }

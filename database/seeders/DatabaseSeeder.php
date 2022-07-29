@@ -3,9 +3,10 @@
 namespace Database\Seeders;
 
 use App\Models\Image;
+use App\Models\Role;
 use Carbon\Carbon;
-use Illuminate\Database\Console\Seeds\WithoutModelEvents;
 use Illuminate\Database\Seeder;
+
 
 class DatabaseSeeder extends Seeder
 {
@@ -16,17 +17,24 @@ class DatabaseSeeder extends Seeder
      */
     public function run()
     {
+        Role::create([
+            'name' => "user"
+        ]);
+        Role::create([
+            'name' => "admin"
+        ]);
+        Role::create([
+            'name' => "employee"
+        ]);
       
         $number_of_product = 10;
         $number_of_category = 5;
         $number_of_meal = 4;
         $number_of_table = 5;
         $number_of_seat = [1,2,3,5,10];
-        $number_of_image = $number_of_product + $number_of_meal;
+        $number_of_image = $number_of_product;
 
-        \App\Models\User::factory(20)->create();
-        \App\Models\Admin::factory(3)->create();
-        \App\Models\Employee::factory(10)->create();
+        \App\Models\User::factory(35)->create();
         \App\Models\Product::factory($number_of_product)->create();
 
         for ($i=1; $i <= $number_of_image; $i++) { 
@@ -59,7 +67,6 @@ class DatabaseSeeder extends Seeder
         $temp_img_id = $number_of_product+1;
         for ($i=1; $i <= $number_of_meal; $i++) { 
             \App\Models\Meal::create([
-                'image_id' => $temp_img_id,
                 'name' => "Meal ".$i 
             ]);
             $temp_img_id++;
@@ -75,10 +82,12 @@ class DatabaseSeeder extends Seeder
             $meal->products()->sync($random_product_array);
         }
         $seat_index = 0;
+        $table_type = ['dinner', 'lunch', 'breakfast'];
         for ($table_index=0; $table_index < $number_of_table ; $table_index++) { 
             \App\Models\Table::create([
                 'name' => 'Table ' .($table_index + 1),
-                'meal_type' => 'evening',
+                'type' => $table_type[rand(0,2)],
+                'status' => true,
                 'created_at' => Carbon::now()->format('Y-m-d'),
                 'number_of_seats' => $number_of_seat[$seat_index]
             ]);

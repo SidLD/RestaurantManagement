@@ -20,9 +20,9 @@ class BookingFactory extends Factory
         return [
             'user_id' => $this->faker->numberBetween(1, 20),
             'status' => 'pending',
-            'date' => $this->faker->dateTimeBetween('now', '+1 month'),
+            'date' => Carbon::now()->format('Y-m-d'),
             'total' => 0,
-            'created_at' => Carbon::now()->format('Y-m-d')
+            'created_at' => Carbon::now()
         ];
     }
 }
