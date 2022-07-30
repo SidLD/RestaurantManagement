@@ -27,7 +27,9 @@
         @update="render"
         :id="item.id" 
         :type="edit"/> 
-      <DeleteBooking :type="booking" 
+      <DeleteBooking 
+      @update="render"
+        :type="booking" 
         :id="item.id" 
         :key="passUsers" />
     </template>

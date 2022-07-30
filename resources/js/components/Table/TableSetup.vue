@@ -304,7 +304,7 @@
       },
 
       save () {
-        this.editedItem.status = this.editedItem.status === this.status[0] ? true : false;
+        this.editedItem.status = this.editedItem.status === this.status[0] ? false : true;
         const token = window.localStorage.getItem('token');
         if (this.editedIndex > -1) {
 

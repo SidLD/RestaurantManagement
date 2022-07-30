@@ -131,7 +131,6 @@ class ProductController extends Controller
      */
     public function edit($id)
     {
-        //
     }
 
     public function productDisplay($id){
@@ -192,6 +191,8 @@ class ProductController extends Controller
             //Dont forget to use php artisan storage:link
             //But this can be access in public/images folder in public folder
             $request->file->storeAs($distination, $unique_image_name);
+
+            self::calculateBooking();
             return response()->json(['res' => 'ok', 'msg' => "Success"]);
         }else {
             $request->validate([
@@ -203,6 +204,7 @@ class ProductController extends Controller
                 'name' => $request->name,
                 'price' => $request->price,
             ]);
+            self::calculateBooking();
             return response()->json(['res' => 'ok', 'msg' => "Success"]);
         }
     }
@@ -238,5 +240,16 @@ class ProductController extends Controller
             return response()->json(['res' => 'fail', 'msg' => "Something Went Wrong"]);
         }
         
+    }
+    private function calculateBooking(){
+        $bookings = Booking::all();
+        foreach($bookings as $book){
+            $current_book = Booking::find($book->id);
+            $total = 0;
+            foreach($current_book->products as $product){
+                $total += $product->price * $product->pivot->qty;
+            }
+            $current_book->total = $total;
+        };
     }
 }

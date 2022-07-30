@@ -2,6 +2,7 @@
 
 namespace Database\Factories;
 
+use App\Models\User;
 use Carbon\Carbon;
 use Illuminate\Database\Eloquent\Factories\Factory;
 
@@ -17,8 +18,14 @@ class BookingFactory extends Factory
      */
     public function definition()
     {
+        $users = User::where('role_id', 1)->get();
+        $users_id = [];
+        foreach($users as $user){
+            array_push($users_id, $user->id);
+        }
+        //Random userid where user is not admin or employee
         return [
-            'user_id' => $this->faker->numberBetween(1, 20),
+            'user_id' => $users_id[rand(0, count($users_id)-1)],
             'status' => 'pending',
             'date' => Carbon::now()->format('Y-m-d'),
             'total' => 0,

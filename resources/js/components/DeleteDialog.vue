@@ -34,12 +34,13 @@ export default {
   data(){
     return {
       dialogDelete : false,
+      token : window.localStorage.getItem('token')
     }
   },
   methods: {
     deleteConfirm(){
-      const token = window.localStorage.getItem('token');
-      axios.delete('api/'+this.type + "/"+this.id, {headers: {"Authorization" : "Bearer " + token}})
+      if(this.type === "booking"){
+        axios.delete('api/'+this.type + "/"+this.id)
       .then(res => {
         alert(res.data.msg)
         this.dialogDelete = false
@@ -50,10 +51,26 @@ export default {
                 alert("Unauthorized")
             window.location.href = '/login';
           }
-        })
-
+      })
+      }else{
+        axios.delete('api/user/'+this.type + "/"+this.id)
+      .then(res => {
+        alert(res.data.msg)
+        this.dialogDelete = false
+        this.$emit('update');
+      })
+      .catch(error => {
+          if(error.response.status === 401){
+            alert("Unauthorized")
+            window.location.href = '/login';
+          }
+      })
+      }
     }
   },
+  created(){
+    axios.defaults.headers.common['Authorization'] = "Bearer "+this.token; 
+  }
 }
 
 </script>

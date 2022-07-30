@@ -269,8 +269,8 @@
           },
           editProduct(){
             let editedProduct = new FormData()
-            editedProduct.append('name', this.newProduct.name)
             editedProduct.append('price', this.newProduct.price) 
+            editedProduct.append('name', this.newProduct.name)
             this.file !== null ? editedProduct.append('file', this.file) : null
             const token = window.localStorage.getItem('token');
             const config = {
@@ -279,9 +279,9 @@
                 'Authorization' : 'Bearer ' + token
               }
             }
+            // console.log(this.newProduct.price);
             axios.post('api/product/update/' + this.product.id, editedProduct, config)
             .then(res => {
-              // console.log(res);
               alert(res.data.msg)
               this.editDialog = false;
               this.$emit('update', this.product);

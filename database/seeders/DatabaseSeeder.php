@@ -107,19 +107,21 @@ class DatabaseSeeder extends Seeder
             $booking = \App\Models\Booking::find($i);
             $booking->tables()->attach(rand(1, $number_of_table));
             //Attaching random product
+            $total = 0;
             for ($product_index=0; $product_index < rand(1,5); $product_index++) { 
                 //Add random qty in pivot
                 $random_product_id = rand(1, $number_of_product);
                 $product = \App\Models\Product::find($random_product_id);
-                $booking->products()->attach($product, ['qty'=> rand(1,3)]);
+                $qty = rand(1,3);
+                $booking->products()->attach($product, ['qty'=> $qty]);
 
                 //Setting Price
-                $total = $booking->total;
-                $total += $product->price;
-                $booking->total = $total;
-                $booking->save();
-
+                //Flooring to two decimal places
+                $product_total = (($product->price * $qty) *100)/100;
+                $total += $product_total;
             }
+            $booking->total = ($total*100)/100;
+            $booking->save();
         }
     }
 }

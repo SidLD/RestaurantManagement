@@ -113,19 +113,17 @@
                         >Add Product</v-btn>
                     </v-col>
                     <v-col cols="6">
-                      <table class="table table-dark">
+                      <table class="table">
                         <thead>
                           <tr>
-                            <td> Id </td>
-                            <td> Product </td>
-                            <td> Quantity </td>
-                            <td> Total </td>
-                            <td> Action </td>
+                            <td style="width: 50%"> Product </td>
+                            <td style="width: 15%"> Quantity </td>
+                            <td style="width: 15%"> Total </td>
+                            <td style="width: 20%"> Action </td>
                           </tr>
                         </thead>
                         <tbody>
                           <tr v-for="(product, i) in productAdded" :key="i">
-                            <td> {{product.id}} </td>
                             <td> {{product.name}} </td>
                             <td> {{product.qty}} </td>
                             <td> {{product.total}} </td>
@@ -142,6 +140,7 @@
                             v-model="total"
                         ></v-text-field>
                     </v-col>
+
                    <v-col cols="3">
                     </v-col>
       
@@ -187,9 +186,9 @@
         datetime: null,
         qty: 1,
         total : 0,
-        tables: this.passTables,
-        products: this.passProducts,
-        users : this.passUsers,
+        tables: null,
+        products: null,
+        users : null,
       }
     },
     methods:{
@@ -212,6 +211,8 @@
               const userWithId = user.id + ". " + user.first_name + " " + user.last_name;
               this.users.push(userWithId)
             })
+          }).catch(error => {
+              
           })
         },
         async getProducts(){
@@ -222,6 +223,9 @@
                   const productWithIds = product.id + ". " + product.name + " - ₱" +product.price;
                   this.products.push(productWithIds)
                 })
+            })
+            .catch(error => {
+
             })
         },
         async getTables(){
@@ -234,9 +238,12 @@
                     this.tables.push(tableWithIds)
                   }
                 })
+            }).catch(error => {
+              
             })
         },
         initiateAddedProduct(products){
+          this.total = 0;
           products.forEach(product => {
             const productWithIds = product.id + ". " + product.name + " - ₱" +product.price
             this.selectedProduct = productWithIds;;
@@ -245,14 +252,16 @@
           });
         },
         addProductToCart(){
+          const productTotalTemp = Number(this.selectedProduct.substring(this.selectedProduct.indexOf("₱")+1, this.selectedProduct.length -1)) * this.qty 
+          const roundedProductTotal = productTotalTemp.toFixed(2);
           const newProduct = {
             id: this.selectedProduct[0],
             name : this.selectedProduct,
             qty : this.qty,
-            total: Number(this.selectedProduct.substring(this.selectedProduct.indexOf("₱")+1, this.selectedProduct.length -1)) * this.qty 
+            total: roundedProductTotal
           }
           this.productAdded.push(newProduct)
-          this.total += newProduct.total;
+          this.total = Number(roundedProductTotal) + Number(this.total);
           this.selectedProduct = null
           this.qty = null
         },
@@ -310,11 +319,11 @@
     async created(){
         if(this.type == "edit"){
           await this.getBook();
-        }else{
+        }
           await this.getUser();
           await this.getProducts()
           await this.getTables()
-        }
+        
     }
   }
 </script>

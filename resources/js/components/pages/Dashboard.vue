@@ -126,6 +126,7 @@ import { mdiAccountGroup,
       logout(){
          window.localStorage.setItem('token', null);
          window.localStorage.setItem('isLogin', false);
+         
          window.location.href = "/login";
       },
       shareData(route){
